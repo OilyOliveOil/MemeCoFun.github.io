@@ -1,0 +1,12 @@
+/* Place your CSS styles in this file */
+
+h1 {
+    text-align: center;
+    font-family: "comic sans ms", sans-serif;
+    font-weight: normal;
+}
+
+}
+.element {
+  width: 50%; 
+  margin: center;
