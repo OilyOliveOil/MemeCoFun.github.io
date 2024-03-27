@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Undertale-like RPG - Bullet Hell</title>
 <style>
+    /* CSS Styles */
     body {
         font-family: Arial, sans-serif;
         text-align: center;
@@ -12,49 +13,8 @@
         color: white;
     }
 
-    #titleScreen {
-        display: block;
-        margin: auto;
-        margin-top: 100px;
-    }
-
-    #game {
-        width: 600px;
-        height: 400px;
-        margin: auto;
-        position: relative;
-        border: 1px solid white;
-        overflow: hidden;
-        display: none;
-    }
-
-    #battleArea {
-        width: 100%;
-        height: 80%;
-        position: absolute;
-        bottom: 0;
-        left: 0;
-    }
-
-    #soul {
-        width: 50px;
-        height: 50px;
-        background-color: blue;
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-    .bullet {
-        width: 20px;
-        height: 20px;
-        background-color: white;
-        position: absolute;
-    }
-
-    #health {
-        color: white;
+    .selected {
+        background-color: #808080 !important;
     }
 
     .button {
@@ -64,10 +24,6 @@
         color: black;
         border: none;
         cursor: pointer;
-    }
-
-    .button.selected {
-        background-color: #808080;
     }
 </style>
 </head>
@@ -89,127 +45,57 @@
     <br><br>
     <button class="button" onclick="startGame()">Start Game</button>
 </div>
-<div id="game">
+<div id="game" style="display: none;">
     <div id="battleArea">
         <div id="soul"></div>
         <button class="button" onclick="useItem()">Use Item</button>
-        <button class="button" onclick="fight()">Fight</button>
-        <button class="button" onclick="act()">Act</button>
-        <button class="button" onclick="spear()">Spear</button>
+        <button class="button" onclick="endTurn()">End Turn</button>
         <p id="health">Health: <span id="healthValue">100</span></p>
     </div>
 </div>
 
 <script>
-    const bulletSpeed = 1; // Reduced speed for blue bullets
-    const bulletSpawnInterval = 2000; // Increased interval for blue bullets
+    // JavaScript Code
+    let selectedSoulColor = null;
+    let selectedDifficulty = null;
 
-    let soul = document.getElementById("soul");
-    let healthValue = document.getElementById("healthValue");
-    let health = 100;
-    let bullets = [];
-    let bulletSpawnTimer;
-    let hitboxesEnabled = false;
-    let soulColor = 'blue';
-    let difficulty = 'normal';
-
-    function moveLeft() {
-        let currentLeft = parseFloat(window.getComputedStyle(soul).getPropertyValue("left"));
-        let newLeft = currentLeft - 10;
-        if (newLeft >= 0) {
-            soul.style.left = newLeft + "px";
-        }
+    function selectSoulColor(color) {
+        selectedSoulColor = color;
+        updateSelectedButton('soulColor', color);
     }
 
-    function moveRight() {
-        let currentLeft = parseFloat(window.getComputedStyle(soul).getPropertyValue("left"));
-        let newLeft = currentLeft + 10;
-        let gameWidth = parseFloat(window.getComputedStyle(document.getElementById("game")).getPropertyValue("width"));
-        let soulWidth = parseFloat(window.getComputedStyle(soul).getPropertyValue("width"));
-        if (newLeft + soulWidth <= gameWidth) {
-            soul.style.left = newLeft + "px";
-        }
-    }
-
-    function updateHealth(damage) {
-        health -= damage;
-        health = Math.max(health, 0);
-        healthValue.textContent = health;
-        if (health <= 0) {
-            gameOver();
-        }
-    }
-
-    document.addEventListener("keydown", function(event) {
-        if (event.key === "ArrowLeft") {
-            moveLeft();
-        } else if (event.key === "ArrowRight") {
-            moveRight();
-        }
-    });
-
-    function createBullet() {
-        let bullet = document.createElement("div");
-        bullet.className = "bullet";
-        bullet.style.left = Math.random() * (600 - 20) + "px";
-        bullet.style.top = "0px";
-        document.getElementById("battleArea").appendChild(bullet);
-        bullets.push(bullet);
-        setTimeout(function() {
-            bullet.parentNode.removeChild(bullet);
-            bullets.splice(bullets.indexOf(bullet), 1);
-        }, 5000); // Blue bullets will disappear after 5 seconds
-    }
-
-    function moveBullets() {
-        for (let i = 0; i < bullets.length; i++) {
-            let bullet = bullets[i];
-            let topPosition = parseFloat(window.getComputedStyle(bullet).getPropertyValue("top"));
-            if (topPosition >= 380) {
-                bullet.parentNode.removeChild(bullet);
-                bullets.splice(i, 1);
-                continue;
-            }
-            bullet.style.top = topPosition + bulletSpeed + "px";
-        }
-    }
-
-    function startBulletSpawn() {
-        bulletSpawnTimer = setInterval(createBullet, bulletSpawnInterval);
-    }
-
-    function stopBulletSpawn() {
-        clearInterval(bulletSpawnTimer);
-    }
-
-    function gameOver() {
-        stopBulletSpawn();
-        alert("Game Over");
+    function selectDifficulty(difficulty) {
+        selectedDifficulty = difficulty;
+        updateSelectedButton('difficulty', difficulty);
     }
 
     function startGame() {
+        if (!selectedSoulColor || !selectedDifficulty) {
+            alert("Please select both soul color and difficulty before starting the game.");
+            return;
+        }
         document.getElementById('titleScreen').style.display = 'none';
         document.getElementById('game').style.display = 'block';
-        startBulletSpawn();
-        setInterval(moveBullets, 30);
     }
 
-    function toggleHitboxes() {
-        hitboxesEnabled = !hitboxesEnabled;
-    }
-
-    function selectSoulColor(color) {
-        soulColor = color;
-        // Add visual indication of selected color if needed
-    }
-
-    function selectDifficulty(selectedDifficulty) {
-        difficulty = selectedDifficulty;
-        // Add visual indication of selected difficulty if needed
+    function updateSelectedButton(type, value) {
+        const buttons = document.querySelectorAll(`.${type}`);
+        buttons.forEach(button => {
+            if (button.textContent.toLowerCase() === value.toLowerCase()) {
+                button.classList.add('selected');
+            } else {
+                button.classList.remove('selected');
+            }
+        });
     }
 
     function useItem() {
-        // Implement logic for using items
+        alert('Use item');
     }
 
-    function
+    function endTurn() {
+        alert('End turn');
+    }
+</script>
+</body>
+</html>
