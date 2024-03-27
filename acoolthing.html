@@ -3,19 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Undertale-like RPG - Blue Soul Mode</title>
+<title>Undertale-like RPG - Bullet Hell</title>
 <style>
     body {
         font-family: Arial, sans-serif;
         text-align: center;
+        background-color: black; /* Set background color to black */
+        color: white; /* Set text color to white */
     }
 
     #game {
-        width: 400px;
-        height: 300px;
-        border: 1px solid black;
+        width: 600px;
+        height: 400px;
         margin: auto;
         position: relative;
+        border: 1px solid white; /* Set border color to white */
+        overflow: hidden;
     }
 
     #soul {
@@ -28,41 +31,36 @@
         transform: translateX(-50%);
     }
 
-    #enemy {
-        width: 50px;
-        height: 50px;
-        background-color: red;
+    .bullet {
+        width: 20px;
+        height: 20px;
+        background-color: white; /* Set bullet color to white */
         position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
+    }
+
+    #health {
+        color: white; /* Set health text color to white */
     }
 </style>
 </head>
 <body>
-<h1>Welcome to Undertale-like RPG - Blue Soul Mode</h1>
+<h1>Welcome to Undertale-like RPG - Bullet Hell</h1>
 <div id="game">
     <div id="soul"></div>
-    <div id="enemy"></div>
 </div>
+<p id="health">Health: <span id="healthValue">100</span></p>
 <script>
-    // Define enemy types and their stats
-    const enemies = [
-        { name: "Froggit", hp: 20, attack: 5 },
-        { name: "Whimsun", hp: 15, attack: 3 },
-        { name: "Napstablook", hp: 30, attack: 8 }
-    ];
+    const bulletSpeed = 3;
+    const bulletSpawnInterval = 1000; // milliseconds
 
-    let dodged = false;
-
-    // Randomly select an enemy
-    function selectRandomEnemy() {
-        return enemies[Math.floor(Math.random() * enemies.length)];
-    }
+    let soul = document.getElementById("soul");
+    let healthValue = document.getElementById("healthValue");
+    let health = 100;
+    let bullets = [];
+    let bulletSpawnTimer;
 
     // Move the soul left
     function moveLeft() {
-        let soul = document.getElementById("soul");
         let currentLeft = parseFloat(window.getComputedStyle(soul).getPropertyValue("left"));
         let newLeft = currentLeft - 10;
         if (newLeft >= 0) {
@@ -72,7 +70,6 @@
 
     // Move the soul right
     function moveRight() {
-        let soul = document.getElementById("soul");
         let currentLeft = parseFloat(window.getComputedStyle(soul).getPropertyValue("left"));
         let newLeft = currentLeft + 10;
         let gameWidth = parseFloat(window.getComputedStyle(document.getElementById("game")).getPropertyValue("width"));
@@ -82,70 +79,74 @@
         }
     }
 
-    // Start a battle with a selected enemy
-    function startBattle(enemy) {
-        let enemyDiv = document.getElementById("enemy");
-        let soulDiv = document.getElementById("soul");
-
-        // Move the enemy downwards
-        let topPosition = 0;
-        let moveEnemy = setInterval(function() {
-            if (topPosition >= 250) {
-                clearInterval(moveEnemy);
-                if (!dodged) {
-                    alert(`${enemy.name} attacks you! You take ${enemy.attack} damage!`);
-                }
-                dodged = false;
-                enemyDiv.style.top = "0px";
-                enemy.hp -= 10; // Simulate player damage (since the player can't attack)
-                if (enemy.hp <= 0) {
-                    alert(`You defeated ${enemy.name}!`);
-                    enemyDiv.style.display = "none";
-                } else {
-                    setTimeout(function() {
-                        startBattle(enemy);
-                    }, 1000);
-                }
-            } else {
-                topPosition += 10;
-                enemyDiv.style.top = topPosition + "px";
-            }
-        }, 500);
-
-        // Move the soul left or right based on user input
-        document.addEventListener("keydown", function(event) {
-            if (event.key === "ArrowLeft") {
-                moveLeft();
-            } else if (event.key === "ArrowRight") {
-                moveRight();
-            }
-        });
-
-        // Check if the soul dodges the enemy attack
-        let checkCollision = setInterval(function() {
-            let enemyTop = parseFloat(window.getComputedStyle(enemyDiv).getPropertyValue("top"));
-            let soulLeft = parseFloat(window.getComputedStyle(soulDiv).getPropertyValue("left"));
-            let soulRight = soulLeft + parseFloat(window.getComputedStyle(soulDiv).getPropertyValue("width"));
-            let enemyLeft = parseFloat(window.getComputedStyle(enemyDiv).getPropertyValue("left"));
-            let enemyRight = enemyLeft + parseFloat(window.getComputedStyle(enemyDiv).getPropertyValue("width"));
-            if (enemyTop >= 200 && soulLeft >= enemyLeft && soulRight <= enemyRight) {
-                clearInterval(moveEnemy);
-                dodged = true;
-                alert(`You dodged ${enemy.name}'s attack!`);
-            }
-        }, 10);
+    // Update player's health
+    function updateHealth(damage) {
+        health -= damage;
+        health = Math.max(health, 0); // Ensure health doesn't go below 0
+        healthValue.textContent = health;
+        if (health <= 0) {
+            gameOver();
+        }
     }
 
-    // Initialize the game
-    function initGame() {
-        let enemy = selectRandomEnemy();
-        let enemyDiv = document.getElementById("enemy");
-        enemyDiv.innerText = enemy.name;
-        startBattle(enemy);
+    // Handle soul movement based on arrow key press
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "ArrowLeft") {
+            moveLeft();
+        } else if (event.key === "ArrowRight") {
+            moveRight();
+        }
+    });
+
+    // Create a bullet
+    function createBullet() {
+        let bullet = document.createElement("div");
+        bullet.className = "bullet";
+        bullet.style.left = Math.random() * (600 - 20) + "px"; // Random horizontal position
+        bullet.style.top = "0px";
+        document.getElementById("game").appendChild(bullet);
+        bullets.push(bullet);
     }
 
-    // Start the game when the page loads
-    window.onload = initGame;
+    // Move bullets downwards
+    function moveBullets() {
+        for (let i = 0; i < bullets.length; i++) {
+            let bullet = bullets[i];
+            let topPosition = parseFloat(window.getComputedStyle(bullet).getPropertyValue("top"));
+            if (topPosition >= 380) {
+                bullet.parentNode.removeChild(bullet);
+                bullets.splice(i, 1);
+                updateHealth(10); // Player takes damage if hit by bullet
+                continue;
+            }
+            bullet.style.top = topPosition + bulletSpeed + "px";
+        }
+    }
+
+    // Start spawning bullets
+    function startBulletSpawn() {
+        bulletSpawnTimer = setInterval(createBullet, bulletSpawnInterval);
+    }
+
+    // Stop spawning bullets
+    function stopBulletSpawn() {
+        clearInterval(bulletSpawnTimer);
+    }
+
+    // End game
+    function gameOver() {
+        stopBulletSpawn();
+        alert("Game Over");
+    }
+
+    // Start the game
+    function startGame() {
+        startBulletSpawn();
+        setInterval(moveBullets, 30); // Move bullets every 30 milliseconds
+    }
+
+    startGame(); // Start the game when the page loads
 </script>
 </body>
 </html>
+
