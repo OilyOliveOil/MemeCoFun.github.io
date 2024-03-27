@@ -8,8 +8,8 @@
     body {
         font-family: Arial, sans-serif;
         text-align: center;
-        background-color: black; /* Set background color to black */
-        color: white; /* Set text color to white */
+        background-color: black;
+        color: white;
     }
 
     #game {
@@ -17,7 +17,7 @@
         height: 400px;
         margin: auto;
         position: relative;
-        border: 1px solid white; /* Set border color to white */
+        border: 1px solid white;
         overflow: hidden;
     }
 
@@ -34,12 +34,12 @@
     .bullet {
         width: 20px;
         height: 20px;
-        background-color: white; /* Set bullet color to white */
+        background-color: white;
         position: absolute;
     }
 
     #health {
-        color: white; /* Set health text color to white */
+        color: white;
     }
 </style>
 </head>
@@ -51,7 +51,7 @@
 <p id="health">Health: <span id="healthValue">100</span></p>
 <script>
     const bulletSpeed = 3;
-    const bulletSpawnInterval = 1000; // milliseconds
+    const bulletSpawnInterval = 1000;
 
     let soul = document.getElementById("soul");
     let healthValue = document.getElementById("healthValue");
@@ -59,7 +59,6 @@
     let bullets = [];
     let bulletSpawnTimer;
 
-    // Move the soul left
     function moveLeft() {
         let currentLeft = parseFloat(window.getComputedStyle(soul).getPropertyValue("left"));
         let newLeft = currentLeft - 10;
@@ -68,7 +67,6 @@
         }
     }
 
-    // Move the soul right
     function moveRight() {
         let currentLeft = parseFloat(window.getComputedStyle(soul).getPropertyValue("left"));
         let newLeft = currentLeft + 10;
@@ -79,17 +77,15 @@
         }
     }
 
-    // Update player's health
     function updateHealth(damage) {
         health -= damage;
-        health = Math.max(health, 0); // Ensure health doesn't go below 0
+        health = Math.max(health, 0);
         healthValue.textContent = health;
         if (health <= 0) {
             gameOver();
         }
     }
 
-    // Handle soul movement based on arrow key press
     document.addEventListener("keydown", function(event) {
         if (event.key === "ArrowLeft") {
             moveLeft();
@@ -98,55 +94,56 @@
         }
     });
 
-    // Create a bullet
     function createBullet() {
         let bullet = document.createElement("div");
         bullet.className = "bullet";
-        bullet.style.left = Math.random() * (600 - 20) + "px"; // Random horizontal position
+        bullet.style.left = Math.random() * (600 - 20) + "px";
         bullet.style.top = "0px";
         document.getElementById("game").appendChild(bullet);
         bullets.push(bullet);
     }
 
-    // Move bullets downwards
     function moveBullets() {
         for (let i = 0; i < bullets.length; i++) {
             let bullet = bullets[i];
             let topPosition = parseFloat(window.getComputedStyle(bullet).getPropertyValue("top"));
+            let bulletLeft = parseFloat(window.getComputedStyle(bullet).getPropertyValue("left"));
+            let bulletRight = bulletLeft + parseFloat(window.getComputedStyle(bullet).getPropertyValue("width"));
+            let soulLeft = parseFloat(window.getComputedStyle(soul).getPropertyValue("left"));
+            let soulRight = soulLeft + parseFloat(window.getComputedStyle(soul).getPropertyValue("width"));
             if (topPosition >= 380) {
                 bullet.parentNode.removeChild(bullet);
                 bullets.splice(i, 1);
-                updateHealth(10); // Player takes damage if hit by bullet
                 continue;
             }
             bullet.style.top = topPosition + bulletSpeed + "px";
+            if (topPosition >= 330 && bulletLeft >= soulLeft && bulletRight <= soulRight) {
+                bullet.parentNode.removeChild(bullet);
+                bullets.splice(i, 1);
+                updateHealth(10);
+            }
         }
     }
 
-    // Start spawning bullets
     function startBulletSpawn() {
         bulletSpawnTimer = setInterval(createBullet, bulletSpawnInterval);
     }
 
-    // Stop spawning bullets
     function stopBulletSpawn() {
         clearInterval(bulletSpawnTimer);
     }
 
-    // End game
     function gameOver() {
         stopBulletSpawn();
         alert("Game Over");
     }
 
-    // Start the game
     function startGame() {
         startBulletSpawn();
-        setInterval(moveBullets, 30); // Move bullets every 30 milliseconds
+        setInterval(moveBullets, 30);
     }
 
-    startGame(); // Start the game when the page loads
+    startGame();
 </script>
 </body>
 </html>
-
