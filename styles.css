@@ -1,52 +1,7 @@
-
 body {
   font-family: comic sans;
   background-color: #f0f0f0;
   color: #333;
   margin: 0;
   padding: 0;
-}
-
-
-header {
-  background-color: blue;
-  color: blue;
-  padding: 20px;
-}
-
-
-nav {
-  background-color: #666;
-  padding: 10px;
-}
-
-nav ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-}
-
-nav ul li {
-  display: inline;
-  margin-right: 10px;
-}
-
-nav ul li a {
-  color: #fff;
-  text-decoration: none;
-}
-
-nav ul li a:hover {
-  text-decoration: underline;
-}
-
-/.main-content {
-  padding: 20px;
-}
-
-footer {
-  background-color: #333;
-  color: #fff;
-  padding: 20px;
-  text-align: center;
 }
