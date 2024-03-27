@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Undertale-like RPG - Blue Soul Mode</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+
+    #game {
+        width: 400px;
+        height: 300px;
+        border: 1px solid black;
+        margin: auto;
+        position: relative;
+    }
+
+    #soul {
+        width: 50px;
+        height: 50px;
+        background-color: blue;
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    #enemy {
+        width: 50px;
+        height: 50px;
+        background-color: red;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to Undertale-like RPG - Blue Soul Mode</h1>
+<div id="game">
+    <div id="soul"></div>
+    <div id="enemy"></div>
+</div>
+<script>
+    // Define enemy types and their stats
+    const enemies = [
+        { name: "Froggit", hp: 20, attack: 5 },
+        { name: "Whimsun", hp: 15, attack: 3 },
+        { name: "Napstablook", hp: 30, attack: 8 }
+    ];
+
+    let dodged = false;
+
+    // Randomly select an enemy
+    function selectRandomEnemy() {
+        return enemies[Math.floor(Math.random() * enemies.length)];
+    }
+
+    // Move the soul left
+    function moveLeft() {
+        let soul = document.getElementById("soul");
+        let currentLeft = parseFloat(window.getComputedStyle(soul).getPropertyValue("left"));
+        let newLeft = currentLeft - 10;
+        if (newLeft >= 0) {
+            soul.style.left = newLeft + "px";
+        }
+    }
+
+    // Move the soul right
+    function moveRight() {
+        let soul = document.getElementById("soul");
+        let currentLeft = parseFloat(window.getComputedStyle(soul).getPropertyValue("left"));
+        let newLeft = currentLeft + 10;
+        let gameWidth = parseFloat(window.getComputedStyle(document.getElementById("game")).getPropertyValue("width"));
+        let soulWidth = parseFloat(window.getComputedStyle(soul).getPropertyValue("width"));
+        if (newLeft + soulWidth <= gameWidth) {
+            soul.style.left = newLeft + "px";
+        }
+    }
+
+    // Start a battle with a selected enemy
+    function startBattle(enemy) {
+        let enemyDiv = document.getElementById("enemy");
+        let soulDiv = document.getElementById("soul");
+
+        // Move the enemy downwards
+        let topPosition = 0;
+        let moveEnemy = setInterval(function() {
+            if (topPosition >= 250) {
+                clearInterval(moveEnemy);
+                if (!dodged) {
+                    alert(`${enemy.name} attacks you! You take ${enemy.attack} damage!`);
+                }
+                dodged = false;
+                enemyDiv.style.top = "0px";
+                enemy.hp -= 10; // Simulate player damage (since the player can't attack)
+                if (enemy.hp <= 0) {
+                    alert(`You defeated ${enemy.name}!`);
+                    enemyDiv.style.display = "none";
+                } else {
+                    setTimeout(function() {
+                        startBattle(enemy);
+                    }, 1000);
+                }
+            } else {
+                topPosition += 10;
+                enemyDiv.style.top = topPosition + "px";
+            }
+        }, 500);
+
+        // Move the soul left or right based on user input
+        document.addEventListener("keydown", function(event) {
+            if (event.key === "ArrowLeft") {
+                moveLeft();
+            } else if (event.key === "ArrowRight") {
+                moveRight();
+            }
+        });
+
+        // Check if the soul dodges the enemy attack
+        let checkCollision = setInterval(function() {
+            let enemyTop = parseFloat(window.getComputedStyle(enemyDiv).getPropertyValue("top"));
+            let soulLeft = parseFloat(window.getComputedStyle(soulDiv).getPropertyValue("left"));
+            let soulRight = soulLeft + parseFloat(window.getComputedStyle(soulDiv).getPropertyValue("width"));
+            let enemyLeft = parseFloat(window.getComputedStyle(enemyDiv).getPropertyValue("left"));
+            let enemyRight = enemyLeft + parseFloat(window.getComputedStyle(enemyDiv).getPropertyValue("width"));
+            if (enemyTop >= 200 && soulLeft >= enemyLeft && soulRight <= enemyRight) {
+                clearInterval(moveEnemy);
+                dodged = true;
+                alert(`You dodged ${enemy.name}'s attack!`);
+            }
+        }, 10);
+    }
+
+    // Initialize the game
+    function initGame() {
+        let enemy = selectRandomEnemy();
+        let enemyDiv = document.getElementById("enemy");
+        enemyDiv.innerText = enemy.name;
+        startBattle(enemy);
+    }
+
+    // Start the game when the page loads
+    window.onload = initGame;
+</script>
+</body>
+</html>
