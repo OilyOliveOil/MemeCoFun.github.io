@@ -12,43 +12,6 @@
         color: white;
     }
 
-    #titleScreen {
-        display: block;
-        margin: auto;
-        margin-top: 100px;
-    }
-
-    #game {
-        display: none;
-        width: 600px;
-        height: 400px;
-        margin: auto;
-        position: relative;
-        border: 1px solid white;
-        overflow: hidden;
-    }
-
-    #soul {
-        width: 50px;
-        height: 50px;
-        background-color: blue;
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-    .bullet {
-        width: 20px;
-        height: 20px;
-        background-color: white;
-        position: absolute;
-    }
-
-    #health {
-        color: white;
-    }
-
     .button {
         margin: 10px;
         padding: 10px 20px;
@@ -56,6 +19,10 @@
         color: black;
         border: none;
         cursor: pointer;
+    }
+
+    .button.selected {
+        background-color: #808080;
     }
 </style>
 </head>
@@ -77,73 +44,72 @@
     <br><br>
     <button class="button" onclick="startGame()">Start Game</button>
 </div>
-<div id="game">
+<div id="game" style="display: none;">
     <div id="soul"></div>
 </div>
 <p id="health">Health: <span id="healthValue">100</span></p>
-<button onclick="toggleHitboxes()">Toggle Hitboxes</button>
-<script>
-    const bulletSpeed = 3;
-    const bulletSpawnInterval = 1000;
+<button class="button" onclick="toggleHitboxes()">Toggle Hitboxes</button>
+<button class="button" onclick="useItem()">Use Item</button>
+<button class="button" onclick="fight()">Fight</button>
+<button class="button" onclick="act()">Act</button>
+<button class="button" onclick="spear()">Spear</button>
 
-    let soul = document.getElementById("soul");
-    let healthValue = document.getElementById("healthValue");
-    let health = 100;
-    let bullets = [];
-    let bulletSpawnTimer;
-    let hitboxesEnabled = false;
+<script>
+    // Define variables to store player data
     let soulColor = 'blue';
     let difficulty = 'normal';
+    let health = 100;
+    let coins = 0;
+    let exp = 0;
 
-    function moveLeft() {
-        let currentLeft = parseFloat(window.getComputedStyle(soul).getPropertyValue("left"));
-        let newLeft = currentLeft - 10;
-        if (newLeft >= 0) {
-            soul.style.left = newLeft + "px";
-        }
+    // Function to start the game
+    function startGame() {
+        document.getElementById('titleScreen').style.display = 'none';
+        document.getElementById('game').style.display = 'block';
+        // Other initialization logic
     }
 
-    function moveRight() {
-        let currentLeft = parseFloat(window.getComputedStyle(soul).getPropertyValue("left"));
-        let newLeft = currentLeft + 10;
-        let gameWidth = parseFloat(window.getComputedStyle(document.getElementById("game")).getPropertyValue("width"));
-        let soulWidth = parseFloat(window.getComputedStyle(soul).getPropertyValue("width"));
-        if (newLeft + soulWidth <= gameWidth) {
-            soul.style.left = newLeft + "px";
-        }
+    // Function to select soul color
+    function selectSoulColor(color) {
+        soulColor = color;
+        // Add visual indication of selected color if needed
     }
 
-    function updateHealth(damage) {
-        health -= damage;
-        health = Math.max(health, 0);
-        healthValue.textContent = health;
-        if (health <= 0) {
-            gameOver();
-        }
+    // Function to select difficulty
+    function selectDifficulty(selectedDifficulty) {
+        difficulty = selectedDifficulty;
+        // Add visual indication of selected difficulty if needed
     }
 
-    document.addEventListener("keydown", function(event) {
-        if (event.key === "ArrowLeft") {
-            moveLeft();
-        } else if (event.key === "ArrowRight") {
-            moveRight();
-        }
-    });
-
-    function createBullet() {
-        let bullet = document.createElement("div");
-        bullet.className = "bullet";
-        bullet.style.left = Math.random() * (600 - 20) + "px";
-        bullet.style.top = "0px";
-        document.getElementById("game").appendChild(bullet);
-        bullets.push(bullet);
+    // Function to toggle hitboxes
+    function toggleHitboxes() {
+        // Implement hitbox toggling logic
     }
 
-    function moveBullets() {
-        for (let i = 0; i < bullets.length; i++) {
-            let bullet = bullets[i];
-            let topPosition = parseFloat(window.getComputedStyle(bullet).getPropertyValue("top"));
-            let bulletLeft = parseFloat(window.getComputedStyle(bullet).getPropertyValue("left"));
-            let bulletRight = bulletLeft + parseFloat(window.getComputedStyle(bullet).getPropertyValue("width"));
-            let soulLeft = parseFloat(window.getComputedStyle(soul).
+    // Function to use item
+    function useItem() {
+        // Implement logic for using items
+    }
+
+    // Function to start fight
+    function fight() {
+        // Implement fight logic
+    }
+
+    // Function to perform act
+    function act() {
+        // Implement act logic
+    }
+
+    // Function to use spear
+    function spear() {
+        // Implement spear logic
+    }
+
+    // Other game logic functions...
+
+</script>
+</body>
+</html>
+
 
