@@ -12,7 +12,14 @@
         color: white;
     }
 
+    #titleScreen {
+        display: block;
+        margin: auto;
+        margin-top: 100px;
+    }
+
     #game {
+        display: none;
         width: 600px;
         height: 400px;
         margin: auto;
@@ -41,18 +48,40 @@
     #health {
         color: white;
     }
+
+    .button {
+        margin: 10px;
+        padding: 10px 20px;
+        background-color: white;
+        color: black;
+        border: none;
+        cursor: pointer;
+    }
 </style>
 </head>
 <body>
-<h1>Welcome to Undertale-like RPG - Bullet Hell</h1>
+<div id="titleScreen">
+    <h1>Welcome to Undertale-like RPG - Bullet Hell</h1>
+    <p>Choose soul color:</p>
+    <button class="button" onclick="selectSoulColor('red')">Red</button>
+    <button class="button" onclick="selectSoulColor('orange')">Orange</button>
+    <button class="button" onclick="selectSoulColor('yellow')">Yellow</button>
+    <button class="button" onclick="selectSoulColor('green')">Green</button>
+    <button class="button" onclick="selectSoulColor('blue')">Blue</button>
+    <button class="button" onclick="selectSoulColor('cyan')">Cyan</button>
+    <button class="button" onclick="selectSoulColor('purple')">Purple</button>
+    <p>Choose difficulty:</p>
+    <button class="button" onclick="selectDifficulty('easy')">Easy</button>
+    <button class="button" onclick="selectDifficulty('normal')">Normal</button>
+    <button class="button" onclick="selectDifficulty('hard')">Hard</button>
+    <br><br>
+    <button class="button" onclick="startGame()">Start Game</button>
+</div>
 <div id="game">
     <div id="soul"></div>
 </div>
 <p id="health">Health: <span id="healthValue">100</span></p>
 <button onclick="toggleHitboxes()">Toggle Hitboxes</button>
-<button onclick="setMode('easy')">Easy</button>
-<button onclick="setMode('normal')">Normal</button>
-<button onclick="setMode('impossible')">Impossible</button>
 <script>
     const bulletSpeed = 3;
     const bulletSpawnInterval = 1000;
@@ -63,7 +92,8 @@
     let bullets = [];
     let bulletSpawnTimer;
     let hitboxesEnabled = false;
-    let mode = 'normal';
+    let soulColor = 'blue';
+    let difficulty = 'normal';
 
     function moveLeft() {
         let currentLeft = parseFloat(window.getComputedStyle(soul).getPropertyValue("left"));
@@ -115,54 +145,5 @@
             let topPosition = parseFloat(window.getComputedStyle(bullet).getPropertyValue("top"));
             let bulletLeft = parseFloat(window.getComputedStyle(bullet).getPropertyValue("left"));
             let bulletRight = bulletLeft + parseFloat(window.getComputedStyle(bullet).getPropertyValue("width"));
-            let soulLeft = parseFloat(window.getComputedStyle(soul).getPropertyValue("left"));
-            let soulRight = soulLeft + parseFloat(window.getComputedStyle(soul).getPropertyValue("width"));
-            if (topPosition >= 380) {
-                bullet.parentNode.removeChild(bullet);
-                bullets.splice(i, 1);
-                continue;
-            }
-            bullet.style.top = topPosition + bulletSpeed + "px";
-            if (hitboxesEnabled && mode !== 'easy' && topPosition >= 330 && bulletLeft >= soulLeft && bulletRight <= soulRight) {
-                bullet.parentNode.removeChild(bullet);
-                bullets.splice(i, 1);
-                updateHealth(10);
-            }
-            if (!hitboxesEnabled && topPosition >= 330 && bulletLeft >= soulLeft && bulletRight <= soulRight) {
-                bullet.parentNode.removeChild(bullet);
-                bullets.splice(i, 1);
-                updateHealth(10);
-            }
-        }
-    }
+            let soulLeft = parseFloat(window.getComputedStyle(soul).
 
-    function startBulletSpawn() {
-        bulletSpawnTimer = setInterval(createBullet, bulletSpawnInterval);
-    }
-
-    function stopBulletSpawn() {
-        clearInterval(bulletSpawnTimer);
-    }
-
-    function gameOver() {
-        stopBulletSpawn();
-        alert("Game Over");
-    }
-
-    function startGame() {
-        startBulletSpawn();
-        setInterval(moveBullets, 30);
-    }
-
-    function toggleHitboxes() {
-        hitboxesEnabled = !hitboxesEnabled;
-    }
-
-    function setMode(selectedMode) {
-        mode = selectedMode;
-    }
-
-    startGame();
-</script>
-</body>
-</html>
