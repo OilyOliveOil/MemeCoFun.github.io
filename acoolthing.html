@@ -19,13 +19,21 @@
     }
 
     #game {
-        display: none;
         width: 600px;
         height: 400px;
         margin: auto;
         position: relative;
         border: 1px solid white;
         overflow: hidden;
+        display: none;
+    }
+
+    #battleArea {
+        width: 100%;
+        height: 80%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
     }
 
     #soul {
@@ -81,15 +89,16 @@
     <br><br>
     <button class="button" onclick="startGame()">Start Game</button>
 </div>
-<div id="game" style="display: none;">
-    <div id="soul"></div>
+<div id="game">
+    <div id="battleArea">
+        <div id="soul"></div>
+        <button class="button" onclick="useItem()">Use Item</button>
+        <button class="button" onclick="fight()">Fight</button>
+        <button class="button" onclick="act()">Act</button>
+        <button class="button" onclick="spear()">Spear</button>
+        <p id="health">Health: <span id="healthValue">100</span></p>
+    </div>
 </div>
-<p id="health">Health: <span id="healthValue">100</span></p>
-<button class="button" onclick="toggleHitboxes()">Toggle Hitboxes</button>
-<button class="button" onclick="useItem()">Use Item</button>
-<button class="button" onclick="fight()">Fight</button>
-<button class="button" onclick="act()">Act</button>
-<button class="button" onclick="spear()">Spear</button>
 
 <script>
     const bulletSpeed = 1; // Reduced speed for blue bullets
@@ -144,7 +153,7 @@
         bullet.className = "bullet";
         bullet.style.left = Math.random() * (600 - 20) + "px";
         bullet.style.top = "0px";
-        document.getElementById("game").appendChild(bullet);
+        document.getElementById("battleArea").appendChild(bullet);
         bullets.push(bullet);
         setTimeout(function() {
             bullet.parentNode.removeChild(bullet);
@@ -179,6 +188,8 @@
     }
 
     function startGame() {
+        document.getElementById('titleScreen').style.display = 'none';
+        document.getElementById('game').style.display = 'block';
         startBulletSpawn();
         setInterval(moveBullets, 30);
     }
@@ -201,17 +212,4 @@
         // Implement logic for using items
     }
 
-    function fight() {
-        // Implement fight logic
-    }
-
-    function act() {
-        // Implement act logic
-    }
-
-    function spear() {
-        // Implement spear logic
-    }
-</script>
-</body>
-</html>
+    function
