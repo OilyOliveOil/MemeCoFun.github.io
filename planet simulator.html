@@ -1,119 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agar.io Clone with AI</title>
-    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+    <title>Space.io</title>
     <style>
-        body {
-            margin: 0;
-            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
-            font-family: Arial, sans-serif;
-        }
-
-        canvas { 
+        canvas {
+            border: 1px solid black;
+            background-color: #000000;
             display: block;
+            margin: 0 auto;
         }
     </style>
 </head>
 <body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
     <script>
-        // Phaser Game Configuration
-        const config = {
-            type: Phaser.AUTO,
-            width: 800,
-            height: 600,
-            physics: {
-                default: 'arcade',
-                arcade: {
-                    debug: false
-                }
-            },
-            scene: {
-                preload: preload,
-                create: create,
-                update: update
-            }
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const player = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            radius: 10,
+            color: '#ffffff'
         };
 
-        // Game variables
-        let player;
-        let cursors;
-        let foodGroup;
-        let aiGroup;
+        const aiPlayers = [];
+        const numAIPlayers = 10;
 
-        // Create Phaser Game Instance
-        const game = new Phaser.Game(config);
-
-        function preload() {
-            // No need to preload images for solid colors
+        // Create AI players
+        for (let i = 0; i < numAIPlayers; i++) {
+            aiPlayers.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: 10,
+                color: '#00ff00'
+            });
         }
 
-        function create() {
-            // Create player
-            player = this.physics.add.rectangle(400, 300, 50, 50, 0x00ff00); // Green player
-            player.setCollideWorldBounds(true);
+        function drawPlayer() {
+            ctx.beginPath();
+            ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+            ctx.fillStyle = player.color;
+            ctx.fill();
+            ctx.closePath();
+        }
 
-            // Create food group
-            foodGroup = this.physics.add.group({
-                key: 'food',
-                repeat: 100 // Increase the number of food instances
+        function drawAIPlayers() {
+            aiPlayers.forEach(aiPlayer => {
+                ctx.beginPath();
+                ctx.arc(aiPlayer.x, aiPlayer.y, aiPlayer.radius, 0, Math.PI * 2);
+                ctx.fillStyle = aiPlayer.color;
+                ctx.fill();
+                ctx.closePath();
             });
+        }
 
-            foodGroup.children.iterate((food) => {
-                food.setTint(0x00ff00); // Green food
-                food.setScale(0.2); // Adjust food size
-            });
-
-            // Create AI group
-            aiGroup = this.physics.add.group({
-                key: 'ai',
-                repeat: 10
-            });
-
-            aiGroup.children.iterate((ai) => {
-                ai.setTint(0x00ff00); // Green AI
-                ai.setCollideWorldBounds(true);
-            });
-
-            // Set up cursor keys
-            cursors = this.input.keyboard.createCursorKeys();
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
 
         function update() {
-            // Player movement
-            if (cursors.left.isDown) {
-                player.setVelocityX(-160);
-            } else if (cursors.right.isDown) {
-                player.setVelocityX(160);
-            } else {
-                player.setVelocityX(0);
-            }
-
-            if (cursors.up.isDown) {
-                player.setVelocityY(-160);
-            } else if (cursors.down.isDown) {
-                player.setVelocityY(160);
-            } else {
-                player.setVelocityY(0);
-            }
-
-            // AI movement (random)
-            aiGroup.children.iterate((ai) => {
-                const randomX = Phaser.Math.Between(-160, 160);
-                const randomY = Phaser.Math.Between(-160, 160);
-                ai.setVelocity(randomX, randomY);
-            });
-
-            // Collision detection between player and food
-            this.physics.overlap(player, foodGroup, eatFood, null, this);
+            clearCanvas();
+            drawPlayer();
+            drawAIPlayers();
         }
 
-        function eatFood(player, food) {
-            food.disableBody(true, true);
-            // Increase player size (not applicable for solid color entities)
+        function gameLoop() {
+            update();
+            requestAnimationFrame(gameLoop);
         }
+
+        gameLoop();
     </script>
 </body>
 </html>
+
