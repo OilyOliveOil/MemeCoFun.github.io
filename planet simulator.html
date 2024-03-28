@@ -54,7 +54,7 @@
         function create() {
             // Create player
             player = this.physics.add.image(400, 300, 'player');
-            player.setScale(0.1);
+            player.setScale(0.5); // Adjust player size
             player.setCollideWorldBounds(true);
 
             // Create food group
@@ -65,7 +65,7 @@
             });
 
             foodGroup.children.iterate((food) => {
-                food.setScale(0.05);
+                food.setScale(0.2); // Adjust food size
             });
 
             // Create AI group
@@ -76,7 +76,7 @@
             });
 
             aiGroup.children.iterate((ai) => {
-                ai.setScale(0.1);
+                ai.setScale(0.2); // Adjust AI size
                 ai.setCollideWorldBounds(true);
             });
 
@@ -115,7 +115,7 @@
 
         function eatFood(player, food) {
             food.disableBody(true, true);
-            player.setScale(player.scaleX + 0.005); // Increase player size
+            player.setScale(player.scaleX + 0.05); // Increase player size
         }
     </script>
 </body>
