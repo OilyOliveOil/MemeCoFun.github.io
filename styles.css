@@ -1,57 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fun CSS Example</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-  }
+/* CSS Styles */
 
-  .fun-box {
-    width: 200px;
-    height: 200px;
-    background-color: #fff;
-    border-radius: 50%;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-    position: relative;
-    overflow: hidden;
-    animation: spin 4s infinite linear;
-  }
+/* Define styles for a container */
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f0f0f0;
+}
 
-  .fun-box::before {
-    content: '';
-    position: absolute;
-    width: 150%;
-    height: 150%;
-    background-image: radial-gradient(circle, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
-    top: -25%;
-    left: -25%;
-    animation: rotate-colors 10s infinite linear;
-  }
+/* Define styles for a heading */
+h1 {
+  color: #333;
+  font-size: 24px;
+  text-align: center;
+}
 
-  @keyframes spin {
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-
-  @keyframes rotate-colors {
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-</style>
-</head>
-<body>
-  <div class="fun-box"></div>
-</body>
-</html>
+/* Define styles for paragraphs */
+p {
+  color: #666;
+  font-size: 16px;
+  line-height: 1.5;
+}
