@@ -46,37 +46,33 @@
         const game = new Phaser.Game(config);
 
         function preload() {
-            this.load.image('player', 'assets/player.png');
-            this.load.image('food', 'assets/food.png');
-            this.load.image('ai', 'assets/ai.png');
+            // No need to preload images for solid colors
         }
 
         function create() {
             // Create player
-            player = this.physics.add.image(400, 300, 'player');
-            player.setScale(0.5); // Adjust player size
+            player = this.physics.add.rectangle(400, 300, 50, 50, 0xff0000); // Solid red
             player.setCollideWorldBounds(true);
 
             // Create food group
             foodGroup = this.physics.add.group({
                 key: 'food',
-                repeat: 50,
-                setXY: { x: 0, y: 0, stepX: Phaser.Math.Between(50, 750), stepY: Phaser.Math.Between(50, 550) }
+                repeat: 100 // Increase the number of food instances
             });
 
             foodGroup.children.iterate((food) => {
+                food.setTint(0x00ff00); // Solid green
                 food.setScale(0.2); // Adjust food size
             });
 
             // Create AI group
             aiGroup = this.physics.add.group({
                 key: 'ai',
-                repeat: 10,
-                setXY: { x: 0, y: 0, stepX: Phaser.Math.Between(50, 750), stepY: Phaser.Math.Between(50, 550) }
+                repeat: 10
             });
 
             aiGroup.children.iterate((ai) => {
-                ai.setScale(0.2); // Adjust AI size
+                ai.setTint(0x0000ff); // Solid blue
                 ai.setCollideWorldBounds(true);
             });
 
@@ -115,7 +111,7 @@
 
         function eatFood(player, food) {
             food.disableBody(true, true);
-            player.setScale(player.scaleX + 0.05); // Increase player size
+            // Increase player size (not applicable for solid color entities)
         }
     </script>
 </body>
