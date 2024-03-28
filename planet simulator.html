@@ -8,19 +8,12 @@
     <style>
         body {
             margin: 0;
-            background-color: #000; /* Black background */
-            overflow: hidden; /* Hide overflow to prevent scrollbars */
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+            font-family: Arial, sans-serif;
         }
 
         canvas { 
             display: block;
-            filter: blur(5px); /* Apply blur effect */
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            margin: auto;
         }
     </style>
 </head>
@@ -59,7 +52,7 @@
 
         function create() {
             // Create player
-            player = this.physics.add.rectangle(400, 300, 50, 50, 0xff0000); // Solid red
+            player = this.physics.add.rectangle(400, 300, 50, 50, 0x00ff00); // Green player
             player.setCollideWorldBounds(true);
 
             // Create food group
@@ -69,7 +62,7 @@
             });
 
             foodGroup.children.iterate((food) => {
-                food.setTint(0x00ff00); // Solid green
+                food.setTint(0x00ff00); // Green food
                 food.setScale(0.2); // Adjust food size
             });
 
@@ -80,7 +73,7 @@
             });
 
             aiGroup.children.iterate((ai) => {
-                ai.setTint(0x0000ff); // Solid blue
+                ai.setTint(0x00ff00); // Green AI
                 ai.setCollideWorldBounds(true);
             });
 
