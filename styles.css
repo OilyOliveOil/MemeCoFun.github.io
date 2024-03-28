@@ -12,7 +12,7 @@
 /* Define styles for a heading */
 h1 {
   color: #333;
-  font-size: 24px;
+  font-size: 30px;
   text-align: center;
 }
 
@@ -21,4 +21,5 @@ p {
   color: #666;
   font-size: 16px;
   line-height: 1.5;
+  text-align: center;
 }
