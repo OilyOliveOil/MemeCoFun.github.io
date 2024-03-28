@@ -21,7 +21,8 @@
             x: canvas.width / 2,
             y: canvas.height / 2,
             radius: 10,
-            color: '#ffffff'
+            color: '#ffffff',
+            speed: 5 // Speed of player movement
         };
 
         const aiPlayers = [];
@@ -65,6 +66,30 @@
             drawAIPlayers();
         }
 
+        function movePlayer(directionX, directionY) {
+            player.x += directionX * player.speed;
+            player.y += directionY * player.speed;
+        }
+
+        document.addEventListener('keydown', function(event) {
+            const speedFactor = 1; // Adjust speed based on keyboard input
+            switch(event.key) {
+                case 'ArrowUp':
+                    movePlayer(0, -1 * speedFactor);
+                    break;
+                case 'ArrowDown':
+                    movePlayer(0, 1 * speedFactor);
+                    break;
+                case 'ArrowLeft':
+                    movePlayer(-1 * speedFactor, 0);
+                    break;
+                case 'ArrowRight':
+                    movePlayer(1 * speedFactor, 0);
+                    break;
+            }
+            update();
+        });
+
         function gameLoop() {
             update();
             requestAnimationFrame(gameLoop);
@@ -74,4 +99,3 @@
     </script>
 </body>
 </html>
-
