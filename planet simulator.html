@@ -9,10 +9,18 @@
         body {
             margin: 0;
             background-color: #000; /* Black background */
+            overflow: hidden; /* Hide overflow to prevent scrollbars */
         }
 
         canvas { 
             display: block;
+            filter: blur(5px); /* Apply blur effect */
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
         }
     </style>
 </head>
