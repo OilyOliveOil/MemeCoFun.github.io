@@ -22,11 +22,17 @@
             y: canvas.height / 2,
             radius: 10,
             color: '#ffffff',
-            speed: 5 // Speed of player movement
+            speed: 5 // Speed of the player
         };
 
         const aiPlayers = [];
         const numAIPlayers = 10;
+
+        const foods = [];
+        const numFoods = 20;
+
+        const powerUps = [];
+        const numPowerUps = 3; // Number of power-ups
 
         // Create AI players
         for (let i = 0; i < numAIPlayers; i++) {
@@ -38,15 +44,57 @@
             });
         }
 
-        function drawPlayer() {
+        // Create food items
+        for (let i = 0; i < numFoods; i++) {
+            foods.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: 5,
+                color: '#ffcc00'
+            });
+        }
+
+        // Create power-up items
+        for (let i = 0; i < numPowerUps; i++) {
+            powerUps.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: 8,
+                color: '#0000ff' // Change color to blue
+            });
+        }
+
+        // Function to update the game state
+        function update() {
+            // Clear the canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw food items
+            foods.forEach(food => {
+                ctx.beginPath();
+                ctx.arc(food.x, food.y, food.radius, 0, Math.PI * 2);
+                ctx.fillStyle = food.color;
+                ctx.fill();
+                ctx.closePath();
+            });
+
+            // Draw power-up items
+            powerUps.forEach(powerUp => {
+                ctx.beginPath();
+                ctx.arc(powerUp.x, powerUp.y, powerUp.radius, 0, Math.PI * 2);
+                ctx.fillStyle = powerUp.color;
+                ctx.fill();
+                ctx.closePath();
+            });
+
+            // Draw the player
             ctx.beginPath();
             ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
             ctx.fillStyle = player.color;
             ctx.fill();
             ctx.closePath();
-        }
 
-        function drawAIPlayers() {
+            // Draw AI players
             aiPlayers.forEach(aiPlayer => {
                 ctx.beginPath();
                 ctx.arc(aiPlayer.x, aiPlayer.y, aiPlayer.radius, 0, Math.PI * 2);
@@ -54,47 +102,57 @@
                 ctx.fill();
                 ctx.closePath();
             });
+
+            // Update player position based on keyboard input
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'ArrowUp' && player.y - player.speed > 0) {
+                    player.y -= player.speed;
+                } else if (event.key === 'ArrowDown' && player.y + player.speed < canvas.height) {
+                    player.y += player.speed;
+                } else if (event.key === 'ArrowLeft' && player.x - player.speed > 0) {
+                    player.x -= player.speed;
+                } else if (event.key === 'ArrowRight' && player.x + player.speed < canvas.width) {
+                    player.x += player.speed;
+                }
+            });
+
+            // Check for collision between player and food items
+            foods.forEach((food, index) => {
+                const dx = player.x - food.x;
+                const dy = player.y - food.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < player.radius + food.radius) {
+                    // Collision detected, remove the food item
+                    foods.splice(index, 1);
+                    player.radius += 2; // Increase player's size
+                }
+            });
+
+            // Check for collision between player and power-up items
+            powerUps.forEach((powerUp, index) => {
+                const dx = player.x - powerUp.x;
+                const dy = player.y - powerUp.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < player.radius + powerUp.radius) {
+                    // Collision detected, remove the power-up item
+                    powerUps.splice(index, 1);
+                    player.radius *= 2; // Double player's size
+                }
+            });
         }
 
-        function clearCanvas() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
-
-        function update() {
-            clearCanvas();
-            drawPlayer();
-            drawAIPlayers();
-        }
-
-        function movePlayer(directionX, directionY) {
-            player.x += directionX * player.speed;
-            player.y += directionY * player.speed;
-        }
-
-        document.addEventListener('keydown', function(event) {
-            const speedFactor = 1; // Adjust speed based on keyboard input
-            switch(event.key) {
-                case 'ArrowUp':
-                    movePlayer(0, -1 * speedFactor);
-                    break;
-                case 'ArrowDown':
-                    movePlayer(0, 1 * speedFactor);
-                    break;
-                case 'ArrowLeft':
-                    movePlayer(-1 * speedFactor, 0);
-                    break;
-                case 'ArrowRight':
-                    movePlayer(1 * speedFactor, 0);
-                    break;
-            }
-            update();
-        });
-
+        // Main game loop
         function gameLoop() {
+            // Update game state
             update();
+
+            // Request next frame
             requestAnimationFrame(gameLoop);
         }
 
+        // Start the game loop
         gameLoop();
     </script>
 </body>
