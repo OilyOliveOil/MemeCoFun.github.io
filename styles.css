@@ -6,19 +6,19 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #f0f0f0;
+  background-color: #000000;
 }
 
 /* Define styles for a heading */
 h1 {
-  color: #333;
+  color: #ffffff;
   font-size: 30px;
   text-align: center;
 }
 
 /* Define styles for paragraphs */
 p {
-  color: #666;
+  color: #ffffff;
   font-size: 16px;
   line-height: 1.5;
   text-align: center;
