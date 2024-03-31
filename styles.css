@@ -1,7 +1,5 @@
-/* CSS Styles */
 
-/* Define styles for a container */
-.container {
+.body {
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
@@ -9,14 +7,14 @@
   background-color: #000000;
 }
 
-/* Define styles for a heading */
+
 h1 {
   color: #ffffff;
   font-size: 30px;
   text-align: center;
 }
 
-/* Define styles for paragraphs */
+
 p {
   color: #ffffff;
   font-size: 16px;
