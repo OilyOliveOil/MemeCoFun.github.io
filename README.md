@@ -1,1 +1,1 @@
-# memecofun.github.io
+# memecofun.com
